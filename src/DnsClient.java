@@ -160,7 +160,7 @@ public class DnsClient {
 			throw new Exception("ERROR\tRecursive Queries are not supported"); //RA bit should be 1
 		}
 		
-		int RCODE = buf & (1<<4 -1); // last 4 bits
+		int RCODE = buf & 0xF; // last 4 bits
 		
 		switch (RCODE) {
 		case 1:
@@ -169,7 +169,8 @@ public class DnsClient {
 			throw new Exception("ERROR\tServer Failure: The name server was unable to process this query due to\n" + 
 		" a problem with the name server");
 		case 3:
-			throw new Exception("NOTFOUND");
+			System.out.println("NOTFOUND");
+			break;
 		case 4:
 			throw new Exception("ERROR\tNot implemented: the name server does not support the requested kind of query\n" + 
 					"");
