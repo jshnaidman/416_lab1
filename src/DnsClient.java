@@ -68,10 +68,6 @@ public class DnsClient {
 				return dnInResponse;
 				
 			}
-			// add . between labels
-			if (dnInResponse.length() > 0) {
-				dnInResponse += '.';
-			}
 			for (int i=0; i<labelLength;i++) {
 				buf = 0xFF & receiveData.get();
 				if (buf == 0) {
@@ -80,8 +76,10 @@ public class DnsClient {
 				}
 				dnInResponse += (char) buf;
 			}
+			dnInResponse += ".";
 		}
-		return dnInResponse;
+		// remove extra "." in the string from return value
+		return dnInResponse.substring(0, dnInResponse.length()-1) ;
 	}
 	
 	// 96 bit header / 12 bytes long
@@ -431,6 +429,8 @@ public class DnsClient {
 		for (int i=0; i<responseHeader.ARCOUNT;i++) {
 			parseRecord(receiveData, responseHeader.isAuthoritative);
 		}
+		
+		
 		
 		
 		// Close the socket
