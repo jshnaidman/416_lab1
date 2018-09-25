@@ -52,11 +52,19 @@ public class DnsClient {
 				//0x3FFF because we want to ignore first 2 significant bits
 				int pointer = 0x3FFF & receiveData.getShort(); 
 				
-				// create a clone of the DNS response byte array from pointer till the last index
-				byte[] responseByteArrayClone = java.util.Arrays.copyOfRange(receiveData.array(), pointer, receiveData.array().length);
-				// Create a new bytebuffer from the cloned array
-				ByteBuffer responseClone = ByteBuffer.wrap(responseByteArrayClone);
-				dnInResponse += parseLabels(responseClone);
+				// Save the position of the receiveData buffer
+				int savedPosition = receiveData.position();
+				
+				// go to the offset described by pointer
+				receiveData.position(pointer);
+				
+				// recursively parse the labels at that position and return it as a string
+				dnInResponse += parseLabels(receiveData);
+				
+				// readjust the position of the buffer
+				receiveData.position(savedPosition);
+				
+				// return the string
 				return dnInResponse;
 				
 			}
@@ -277,26 +285,26 @@ public class DnsClient {
 		while (arxIdx<args.length) {
 			String arg = args[arxIdx];
 			
-			if (arg == "-t") {
+			if (arg.equals("-t")) {
 				timeoutSeconds = parseInt(args[arxIdx+1]);
 				arxIdx+= 2;
 			}
-			else if (arg == "-r") {
+			else if (arg.equals("-r")) {
 				maxRetries = parseInt(args[arxIdx+1]);
 				arxIdx+=2;
 			}
-			else if (arg == "-p") {
+			else if (arg.equals("-p")) {
 				serverPort = parseInt(args[arxIdx+1]);
 				arxIdx+=2;
 			}
-			else if (arg == "-mx") {
+			else if (arg.equals("-mx")) {
 				queryType = 0x0F;
-				queryTypeString = NAME_SERVER;
+				queryTypeString = MAIL_SERVER;
 				arxIdx+=1;
 			}
-			else if (arg == "-ns") {
+			else if (arg.equals("-ns")) {
 				queryType = 0x02;
-				queryTypeString = MAIL_SERVER;
+				queryTypeString = NAME_SERVER;
 				arxIdx+=1;
 			}
 			else {
