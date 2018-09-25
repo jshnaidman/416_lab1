@@ -1,6 +1,8 @@
 cd "/home/jacob/School/416_ecse/lab1/src/" # replace with directory of source code
 javac DnsClient.java
 
+# -p is untested because idk of any dns servers that don't use port 53 by default
+# nonauth/auth is untested because it seems that authoritative dns servers don't support recursive queries
 
 MCGILL="" # Set to true if connected to mcgill network
 
