@@ -34,6 +34,18 @@ public class DnsClient {
 		return -1;
 	}
 	
+	private static float parseFloat(String str) {
+		try {
+			return Float.parseFloat(str);
+		} catch (NumberFormatException e) {
+			System.err.println("ERROR\tNumberFormatException: " + e.getMessage());
+			java.lang.System.exit(1);
+		}
+		// never gets here
+		return -1;
+	}
+	
+	
 	private static String parseLabels(ByteBuffer receiveData) throws Exception{
 		// get domain name from response
 		int labelLength;
@@ -284,7 +296,7 @@ public class DnsClient {
 			String arg = args[arxIdx];
 			
 			if (arg.equals("-t")) {
-				timeoutSeconds = parseInt(args[arxIdx+1]);
+				timeoutSeconds = parseFloat(args[arxIdx+1]);
 				arxIdx+= 2;
 			}
 			else if (arg.equals("-r")) {
@@ -346,7 +358,7 @@ public class DnsClient {
 			java.lang.System.exit(1);
 		}
 		//argument is in miliseconds
-		clientSocket.setSoTimeout((int) timeoutSeconds*1000);
+		clientSocket.setSoTimeout((int) (timeoutSeconds*1000));
 		
 		
 		
