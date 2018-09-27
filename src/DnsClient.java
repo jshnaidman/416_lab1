@@ -214,7 +214,7 @@ public class DnsClient {
 		case 0x000F: responseTypeString = MAIL_SERVER;
 		break;
 		
-		default: throw new Exception("ERROR\tUnexpected RDATA type in the response");
+		default: throw new Exception("ERROR\tUnexpected RDATA type in the response (" + String.format("%X", responseType)+ ")" );
 		
 		}
 		
