@@ -413,7 +413,9 @@ public class DnsClient {
 			}
 		}
 		if (!received) {
-			System.out.println("ERROR\tMaximum number of retries [" + maxRetries + "] exceeded");
+			double responseTimeSeconds = (double) ((System.nanoTime() - startTime)/1e9);
+			System.out.println("ERROR\tMaximum number of retries [" + maxRetries + "] exceeded after " + responseTimeSeconds +
+					" seconds");
 			java.lang.System.exit(1);
 		}
 		double responseTimeSeconds = (double) ((System.nanoTime() - startTime)/1e9);
