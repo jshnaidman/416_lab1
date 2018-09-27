@@ -167,8 +167,7 @@ public class DnsClient {
 			throw new Exception("ERROR\tServer Failure: The name server was unable to process this query due to\n" + 
 		" a problem with the name server");
 		case 3:
-			System.out.println("NOTFOUND");
-			break;
+			throw new Exception("NOTFOUND");
 		case 4:
 			throw new Exception("ERROR\tNot implemented: the name server does not support the requested kind of query\n" + 
 					"");
