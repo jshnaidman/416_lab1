@@ -422,27 +422,43 @@ public class DnsClient {
 		
 		System.out.format("Response received after %f seconds ([%d] retries)%n", responseTimeSeconds, retryCount-1);
 		
-		DnsResponseHeader responseHeader = parseResponseHeader(receiveData,ID);
+		try {
+			DnsResponseHeader responseHeader = parseResponseHeader(receiveData,ID);
+			
+			receiveData.position(receiveData.position()+queryLength); // ignore query record
+			
+			try {
+				
+				if (responseHeader.ANCOUNT > 0) {
+					System.out.format("***Answer Section ([%d] records)***%n", responseHeader.ANCOUNT);
+				}
+				
+				for (int i=0; i<responseHeader.ANCOUNT;i++) {
+					parseRecord(receiveData, responseHeader.isAuthoritative);
+				}
+				
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+			
+			try {
+				
+				if (responseHeader.ARCOUNT > 0) {
+					System.out.format("***Additional Section ([%d] records)***%n", responseHeader.ARCOUNT);
+				}
+				
+				
+				for (int i=0; i<responseHeader.ARCOUNT;i++) {
+					parseRecord(receiveData, responseHeader.isAuthoritative);
+				}
+				
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
 		
-		receiveData.position(receiveData.position()+queryLength); // ignore query record
-		
-		if (responseHeader.ANCOUNT > 0) {
-			System.out.format("***Answer Section ([%d] records)***%n", responseHeader.ANCOUNT);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
-		
-		for (int i=0; i<responseHeader.ANCOUNT;i++) {
-			parseRecord(receiveData, responseHeader.isAuthoritative);
-		}
-		
-		if (responseHeader.ARCOUNT > 0) {
-			System.out.format("***Additional Section ([%d] records)***%n", responseHeader.ARCOUNT);
-		}
-		
-		
-		for (int i=0; i<responseHeader.ARCOUNT;i++) {
-			parseRecord(receiveData, responseHeader.isAuthoritative);
-		}
-		
 		
 		
 		
